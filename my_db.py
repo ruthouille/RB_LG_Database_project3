@@ -15,6 +15,8 @@ my_dataset = pd.read_csv('netflix_titles.csv')
 # write the data to a sqlite table
 my_dataset.to_sql('my_dataset', conn, if_exists='append', index = False)
 
-print(c.execute('''SELECT * FROM my_dataset LIMIT 10''').fetchall())
+#print(c.execute('''SELECT * FROM my_dataset LIMIT 10''').fetchall())
 
 #L'API va devoir prendre en argument un texte qui va etre lu et executer (le texte sera notre requête)
+
+#On va pouvoir Lire, Creer, Updater et supprimer un utilisateur
