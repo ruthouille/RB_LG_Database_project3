@@ -7,11 +7,7 @@ from my_db import my_dataset
 #from IPython.display import Markdown, display
 
 engine = create_engine('sqlite:///my_dabase.db', echo=True)
-
-with engine.connect() as connection:
-    results = connection.execute("SELECT * FROM my_dataset LIMIT 10;")
-    print(results.fetchall())
-
+conn = engine.connect()
 
 api = FastAPI(
     title='Netflix'
@@ -31,10 +27,10 @@ class Movies(BaseModel):
     listed_in: str
     description: str
 
-# It allow to add a movie in the list
-@api.put('/update')
+# It allow to add a movie in the database
+@api.put('/update/insert')
 def insert_movie(movie: Movies):
-    
+
     new_movie = [(movie.show_id, 
                   movie.type,
                   movie.title,
@@ -62,3 +58,18 @@ def insert_movie(movie: Movies):
         
             else:
                 transaction.commit()
+                return new_movie
+
+
+# Delete an element in the database
+@api.put('/update/delete')
+def delete_movie(id: str):
+    try:
+        sql = text("DELETE FROM my_dataset WHERE my_dataset.show_id" + " =" + "'" + id + "'")
+        result = engine.execute(sql)
+        result.fetchall()
+        return print("The movie has been removed")
+
+    except IndexError:
+        return {}
+
