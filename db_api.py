@@ -66,9 +66,11 @@ def insert_movie(movie: Movies):
 def delete_movie(id: str):
     try:
         sql = text("DELETE FROM my_dataset WHERE my_dataset.show_id" + " =" + "'" + id + "'")
-        result = engine.execute(sql)
-        result.fetchall()
-        return print("The movie has been removed")
+        engine.execute(sql)
+        #result.fetchall()
+        sql2 = text("SELECT show_id FROM my_dataset where show_id = " + "'" + id + "'")
+        result2 = engine.execute(sql2)
+        return print(result2.fetchall())
 
     except IndexError:
         return {}
