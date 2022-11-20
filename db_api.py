@@ -60,7 +60,8 @@ def insert_movie(movie: Movies):
             else:
                 transaction.commit()
                 return new_movie
-"""
+
+#
     sql = insert(my_dataset).values(show_id=movie.show_id, 
                   type=movie.type,
                   title=movie.title,
@@ -75,7 +76,7 @@ def insert_movie(movie: Movies):
                   description=movie.description)
     compiled = sql.compile()
     print(compiled.params)
-     
+"""    
 
 
 # Delete an element in the database

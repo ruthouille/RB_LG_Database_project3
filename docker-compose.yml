@@ -1,0 +1,17 @@
+version: "3.9"
+networks:
+  api_network:
+    ipam:
+      config:
+        - subnet: 172.50.0.0/16
+
+services:
+  api:
+    restart: always
+    image: db_api:1.0.0
+    container_name: db_api
+    networks:
+      api_network:
+        ipv4_address: 172.50.0.3
+    ports:
+            - "8080:8080"
