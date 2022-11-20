@@ -10,6 +10,7 @@ c.execute('''CREATE TABLE my_dataset (show_id STRING NOT NULL, type STRING, titl
 date_added STRING, release_year INTEGER, rating STRING, duration STRING, listed_in STRING, description STRING,
 PRIMARY KEY ("show_id"))''')
 
+
 #Load our file
 my_dataset = pd.read_csv('netflix_titles.csv')
 

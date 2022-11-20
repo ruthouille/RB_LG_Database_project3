@@ -1,9 +1,10 @@
 import sqlite3, sqlalchemy
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, MetaData, create_engine, text, inspect
+from sqlalchemy import insert, create_engine, text, inspect
 from fastapi import Depends, FastAPI, HTTPException, status
 import numpy as np
 from pydantic import BaseModel
 from my_db import my_dataset
+import json
 #from IPython.display import Markdown, display
 
 engine = create_engine('sqlite:///my_dabase.db', echo=True)
@@ -30,7 +31,7 @@ class Movies(BaseModel):
 # It allow to add a movie in the database
 @api.put('/update/insert')
 def insert_movie(movie: Movies):
-
+    """
     new_movie = [(movie.show_id, 
                   movie.type,
                   movie.title,
@@ -49,7 +50,7 @@ def insert_movie(movie: Movies):
             try:
                 markers = ','.join('?' * len(new_movie[0])) 
                 ins = 'INSERT OR REPLACE INTO {tablename} VALUES ({markers})'
-                ins = ins.format(tablename=my_dataset.name, markers=markers)
+                ins = ins.format(tablename=my_dataset, markers=markers)
                 connection.execute(ins, new_movie)
    
             except:
@@ -59,6 +60,22 @@ def insert_movie(movie: Movies):
             else:
                 transaction.commit()
                 return new_movie
+"""
+    sql = insert(my_dataset).values(show_id=movie.show_id, 
+                  type=movie.type,
+                  title=movie.title,
+                  director=movie.director,
+                  cast=movie.cast,
+                  country=movie.country,
+                  date_added=movie.date_added,
+                  release_year=movie.release_year,
+                  rating=movie.rating,
+                  duration=movie.duration,
+                  listed_in=movie.listed_in,
+                  description=movie.description)
+    compiled = sql.compile()
+    print(compiled.params)
+     
 
 
 # Delete an element in the database
@@ -69,9 +86,41 @@ def delete_movie(id: str):
         engine.execute(sql)
         #result.fetchall()
         sql2 = text("SELECT show_id FROM my_dataset where show_id = " + "'" + id + "'")
-        result2 = engine.execute(sql2)
-        return print(result2.fetchall())
+        result2 = engine.execute(sql2).fetchall()
+        return json.dumps(dict(result2))
 
     except IndexError:
         return {}
 
+#Display the column show_id and the type
+@api.get('/display/type')
+def get_type():
+    try:
+        sql = text("SELECT show_id, type FROM my_dataset")
+        result = engine.execute(sql).fetchall()
+        return json.dumps(dict(result))
+
+    except IndexError:
+        return {}
+
+#Display the column show_id and the title
+@api.get('/display/title')
+def get_title():
+    try:
+        sql = text("SELECT show_id, title FROM my_dataset")
+        result = engine.execute(sql).fetchall()
+        return json.dumps(dict(result))
+
+    except IndexError:
+        return {}
+
+#Display the column show_id and the title grouped by country
+@api.get('/display/title/country')
+def get_title_by_country():
+    try:
+        sql = text("SELECT show_id, title FROM my_dataset GROUP BY country")
+        result = engine.execute(sql).fetchall()
+        return json.dumps(dict(result))
+
+    except IndexError:
+        return {}
