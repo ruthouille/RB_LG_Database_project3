@@ -1,13 +1,10 @@
 FastAPI[all]
 uvicorn==0.18.2
-models==0.9.3
-uvloop==0.12
 uvloop==0.14
 requests
 pandas
 numpy
 app
 fastapi_sqlalchemy
-pymodels
 httptools==0.1
 IPython

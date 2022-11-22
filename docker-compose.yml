@@ -3,15 +3,15 @@ networks:
   my_network:
     ipam:
       config:
-        - subnet: 172.50.0.0/16
+        - subnet: 172.10.0.0/16
 
 services:
   api:
     restart: always
-    image: db_api:1.0.0
+    image: db_api:1.0.1
     container_name: db_api
     networks:
       my_network:
-        ipv4_address: 172.50.0.10
+        ipv4_address: 172.10.0.10
     ports:
-            - "8080:8080"
+            - "80:80"
