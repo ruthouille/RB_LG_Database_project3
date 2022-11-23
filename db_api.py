@@ -3,7 +3,7 @@ from sqlalchemy import insert, create_engine, text, inspect
 from fastapi import Depends, FastAPI, HTTPException, status
 import numpy as np
 from pydantic import BaseModel
-from my_db import my_dataset
+from my_db import my_dataset, c
 import json
 #from IPython.display import Markdown, display
 
@@ -31,53 +31,15 @@ class Movies(BaseModel):
 # It allow to add a movie in the database
 @api.put('/update/insert')
 def insert_movie(movie: Movies):
-    """
-    new_movie = [(movie.show_id, 
-                  movie.type,
-                  movie.title,
-                  movie.director,
-                  movie.cast,
-                  movie.country,
-                  movie.date_added,
-                  movie.release_year,
-                  movie.rating,
-                  movie.duration,
-                  movie.listed_in,
-                  movie.description)]
-
-    with engine.connect() as connection:
-        with connection.begin() as transaction:
-            try:
-                markers = ','.join('?' * len(new_movie[0])) 
-                ins = 'INSERT OR REPLACE INTO {tablename} VALUES ({markers})'
-                ins = ins.format(tablename=my_dataset, markers=markers)
-                connection.execute(ins, new_movie)
-   
-            except:
-                transaction.rollback()
-                raise
-        
-            else:
-                transaction.commit()
-                return new_movie
-
-#
-    sql = insert(my_dataset).values(show_id=movie.show_id, 
-                  type=movie.type,
-                  title=movie.title,
-                  director=movie.director,
-                  cast=movie.cast,
-                  country=movie.country,
-                  date_added=movie.date_added,
-                  release_year=movie.release_year,
-                  rating=movie.rating,
-                  duration=movie.duration,
-                  listed_in=movie.listed_in,
-                  description=movie.description)
-    compiled = sql.compile()
-    print(compiled.params)
-"""    
-
+    mydb = sqlite3.connect('my_dabase.db')
+    mycursor = mydb.cursor()
+    sql = "INSERT INTO my_dataset (show_id, type, title, director, cast, country, date_added, release_year, rating, duration,\
+        listed_in, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    val = (movie.show_id, movie.type, movie.title, movie.director, movie.cast, movie.country, movie.date_added, movie.release_year,\
+        movie.rating, movie.duration, movie.listed_in, movie.description)
+    
+    mycursor.execute(sql, val)
+    mydb.commit()
 
 # Delete an element in the database
 @api.put('/update/delete')
